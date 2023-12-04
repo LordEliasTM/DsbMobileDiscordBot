@@ -71,10 +71,7 @@ const parsePlanFromUrl = async (browser, url) => {
 
 /** @param {Day[]} days @param {string} grade */
 const filterForGrade = (days, grade) => {
-  days.forEach(
-    (day) =>
-      (day.dayEntries = day.dayEntries.filter((e) => e.klasse.includes(grade)))
-  );
+  days.forEach(day => day.dayEntries = day.dayEntries.filter(e => e.klasse.includes(grade)));
   return days;
 };
 
@@ -108,8 +105,7 @@ const combineDupes = (days) => {
     /** @type {DayEntry[]} */
     const entriesFinal = [];
     day.dayEntries.forEach((e) => {
-      const dupe = day.dayEntries.find(
-        (e2) =>
+      const dupe = day.dayEntries.find(e2 =>
           e2.klasse == e.klasse &&
           e2.vertretung == e.vertretung &&
           e2.raum == e.raum &&
@@ -173,24 +169,15 @@ const doLoginStuff = async (page) => {
   const wasd = filterForGrade(asd, process.env.GRADE);
   const asaaa = filterForTeachers(asd);
   const asdf = combineDupes(wasd);
-  asdf.forEach((day) => {
-    console.log("\n" + chalk.underline(day.date + " " + day.day));
-    day.dayEntries.forEach((e) => {
-      const base = `${chalk.blue(e.lehrer)} ${e.fach} ${chalk.yellow(
-        e.stunde
-      )}`;
-      const additive = e.entfall
-        ? chalk.greenBright("entfällt.")
-        : e.lehrer != e.vertretung
-        ? `vertretung ${chalk.red(e.vertretung)} in ${chalk.hex("#FFA500")(
-            e.raum
-          )}`
-        : `raumtausch ${chalk.hex("#FFA500")(e.raum)}`;
-      const notiz =
-        e.notiz.trim() != "" ? chalk.grey(" (" + e.notiz.trim() + ")") : "";
-      console.log(base, additive, notiz);
-    });
-  });
+  asdf.forEach(day => {
+    console.log("\n"+chalk.underline(day.date+" "+day.day))
+    day.dayEntries.forEach(e => {
+      const base = `${chalk.blue(e.lehrer)} ${e.fach} ${chalk.yellow(e.stunde)}`
+      const additive = e.entfall ? chalk.greenBright("entfällt.") : e.lehrer != e.vertretung ? `vertretung ${chalk.red(e.vertretung)} in ${chalk.hex('#FFA500')(e.raum)}` : `raumtausch ${chalk.hex('#FFA500')(e.raum)}`
+      const notiz = e.notiz.trim() != "" ? chalk.grey(" ("+e.notiz.trim()+")") : ""
+      console.log(base, additive, notiz)
+    })
+  })
 
   await browser.close();
 })();
