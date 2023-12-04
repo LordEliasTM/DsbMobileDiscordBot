@@ -167,7 +167,7 @@ const doLoginStuff = async (page) => {
 
   const asd = kek[0].concat(kek[1]);
   const wasd = filterForGrade(asd, process.env.GRADE);
-  const asaaa = filterForTeachers(asd);
+  if (process.env.FILTER === "true") filterForTeachers(asd);
   const asdf = combineDupes(wasd);
   asdf.forEach(day => {
     console.log("\n"+chalk.underline(day.date+" "+day.day))
