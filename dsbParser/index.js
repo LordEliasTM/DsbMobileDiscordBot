@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 import chalk from "chalk";
-import moment from "moment";
+import ansiHtml from "ansi-to-html";
+import nodeHtmlToImage from 'node-html-to-image';
 import "dotenv/config";
 
 /**
@@ -165,19 +166,34 @@ const doLoginStuff = async (page) => {
     parsePlanFromUrl(browser, planLinks[1]),
   ]);
 
+  await browser.close();
+
+  const ah = new ansiHtml({ fg: "#FFF" });
+  let finalHTML = "";
+
   const asd = kek[0].concat(kek[1]);
   const wasd = filterForGrade(asd, process.env.GRADE);
   if (process.env.FILTER === "true") filterForTeachers(asd);
   const asdf = combineDupes(wasd);
   asdf.forEach(day => {
-    console.log("\n"+chalk.underline(day.date+" "+day.day))
+    const dayText = chalk.underline(day.date+" "+day.day);
+    console.log(dayText);
+    finalHTML += ah.toHtml(dayText)+"<br>";
     day.dayEntries.forEach(e => {
-      const base = `${chalk.blue(e.lehrer)} ${e.fach} ${chalk.yellow(e.stunde)}`
-      const additive = e.entfall ? chalk.greenBright("entfällt.") : e.lehrer != e.vertretung ? `vertretung ${chalk.red(e.vertretung)} in ${chalk.hex('#FFA500')(e.raum)}` : `raumtausch ${chalk.hex('#FFA500')(e.raum)}`
+      const base = `${chalk.blueBright(e.lehrer)} ${e.fach} ${chalk.yellowBright(e.stunde)}`
+      const additive = e.entfall ? chalk.greenBright("entfällt.") : e.lehrer != e.vertretung ? `vertretung ${chalk.redBright(e.vertretung)} in ${chalk.hex('#FFA500')(e.raum)}` : `raumtausch ${chalk.hex('#FFA500')(e.raum)}`
       const notiz = e.notiz.trim() != "" ? chalk.grey(" ("+e.notiz.trim()+")") : ""
-      console.log(base, additive, notiz)
+      const final = base+" "+additive+" "+notiz;
+      console.log(final)
+      finalHTML += ah.toHtml(final)+"<br>";
     })
+    console.log(" ")
+    finalHTML += "<br>"
   })
+  finalHTML = `<html><body style="padding: 10px; width: fit-content; height: fit-content; background: black; font-family: monospace; color: white; white-space-collapse: preserve;">`+finalHTML+"</body></html>";
 
-  await browser.close();
+  await nodeHtmlToImage({
+    output: './image.png',
+    html: finalHTML,
+  })
 })();
