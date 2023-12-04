@@ -4,8 +4,8 @@
 2. `pnpm i`
 3. create `.env` file with this content:
 ```
-USER="244981" 
-PASS="VPlanS"
+VUSER="244981" 
+VPASS="VPlanS"
 GRADE="12"
 ```
 4. `pnpm run`
