@@ -3,7 +3,6 @@ import chalk from "chalk";
 import ansiHtml from "ansi-to-html";
 import nodeHtmlToImage from 'node-html-to-image';
 import "dotenv/config";
-import fs from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -213,6 +212,6 @@ export const getDsbImage = async () => {
   return path.resolve("./image.png");
 }
 
-(async () => {
+/*(async () => {
   await getDsbImage();
-})();
+})();*/
