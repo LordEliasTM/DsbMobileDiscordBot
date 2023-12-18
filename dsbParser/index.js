@@ -3,6 +3,8 @@ import chalk from "chalk";
 import ansiHtml from "ansi-to-html";
 import nodeHtmlToImage from 'node-html-to-image';
 import "dotenv/config";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 /**
  * @typedef {{
@@ -135,7 +137,7 @@ const doLoginStuff = async (page) => {
   await page.click("input.login");
 };
 
-(async () => {
+const getDaPlanzz = async () => {
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
@@ -167,6 +169,11 @@ const doLoginStuff = async (page) => {
   ]);
 
   await browser.close();
+  return kek;
+}
+
+const logAndMakeHTML = async () => {
+  const kek = await getDaPlanzz();
 
   const ah = new ansiHtml({ fg: "#FFF" });
   let finalHTML = "";
@@ -182,7 +189,7 @@ const doLoginStuff = async (page) => {
     day.dayEntries.forEach(e => {
       const base = `${chalk.hex("#41C8FF")(e.lehrer)} ${e.fach} ${chalk.yellowBright(e.stunde)}`
       const additive = e.entfall ? chalk.greenBright("entfällt.") : e.lehrer != e.vertretung ? `vertretung ${chalk.redBright(e.vertretung)} in ${chalk.hex('#FFA500')(e.raum)}` : `raumtausch ${chalk.hex('#FFA500')(e.raum)}`
-      const notiz = e.notiz.trim() != "" ? chalk.grey(" ("+e.notiz.trim()+")") : ""
+      const notiz = e.notiz.trim() != "" ? chalk.hex("#848884")(" ("+e.notiz.trim()+")") : ""
       const final = base+" "+additive+" "+notiz;
       console.log(final)
       finalHTML += ah.toHtml(final)+"<br>";
@@ -192,8 +199,20 @@ const doLoginStuff = async (page) => {
   })
   finalHTML = `<html><body style="padding: 10px; width: fit-content; height: fit-content; background: black; font-family: monospace; color: white; white-space-collapse: preserve;">`+finalHTML+"</body></html>";
 
+  return finalHTML;
+}
+
+export const getDsbImage = async () => {
+  const html = await logAndMakeHTML();
+
   await nodeHtmlToImage({
     output: './image.png',
-    html: finalHTML,
+    html: html,
   })
+
+  return path.resolve("./image.png");
+}
+
+(async () => {
+  await getDsbImage();
 })();
