@@ -180,7 +180,7 @@ const doLoginStuff = async (page) => {
     console.log(dayText);
     finalHTML += ah.toHtml(dayText)+"<br>";
     day.dayEntries.forEach(e => {
-      const base = `${chalk.blueBright(e.lehrer)} ${e.fach} ${chalk.yellowBright(e.stunde)}`
+      const base = `${chalk.hex("#41C8FF")(e.lehrer)} ${e.fach} ${chalk.yellowBright(e.stunde)}`
       const additive = e.entfall ? chalk.greenBright("entfällt.") : e.lehrer != e.vertretung ? `vertretung ${chalk.redBright(e.vertretung)} in ${chalk.hex('#FFA500')(e.raum)}` : `raumtausch ${chalk.hex('#FFA500')(e.raum)}`
       const notiz = e.notiz.trim() != "" ? chalk.grey(" ("+e.notiz.trim()+")") : ""
       const final = base+" "+additive+" "+notiz;
